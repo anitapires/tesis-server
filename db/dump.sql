@@ -3,15 +3,16 @@
 --
 -- Text encoding used: UTF-8
 --
+-- Table: drawings
+DROP TABLE IF EXISTS drawings;
+CREATE TABLE drawings (id SERIAL PRIMARY KEY, color VARCHAR (255));
 
 -- Table: sections
 DROP TABLE IF EXISTS sections;
-CREATE TABLE sections (id INTEGER PRIMARY KEY AUTOINCREMENT, drawing_id INTEGER REFERENCES drawings (id) ON DELETE CASCADE NOT NULL, latitude VARCHAR (255) NOT NULL, longitude VARCHAR (255) NOT NULL);
+CREATE TABLE sections (id SERIAL PRIMARY KEY, drawing_id INTEGER REFERENCES drawings (id) ON DELETE CASCADE NOT NULL, latitude VARCHAR (255) NOT NULL, longitude VARCHAR (255) NOT NULL);
+
+INSERT INTO drawings (id, color) VALUES (1, '#0000FF');
+
 INSERT INTO sections (id, drawing_id, latitude, longitude) VALUES (1, 1, '-34.911038', '-57.954474');
 INSERT INTO sections (id, drawing_id, latitude, longitude) VALUES (2, 1, '-34.909615', '-57.941537');
 INSERT INTO sections (id, drawing_id, latitude, longitude) VALUES (3, 1, '-34.920203', '-57.941868');
-
--- Table: drawings
-DROP TABLE IF EXISTS drawings;
-CREATE TABLE drawings (id INTEGER PRIMARY KEY AUTOINCREMENT, color VARCHAR (255));
-INSERT INTO drawings (id, color) VALUES (1, '#0000FF');
