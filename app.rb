@@ -14,27 +14,29 @@ class App < Sinatra::Base
 
 
   before do
-    content_type :json    
-    headers 'Access-Control-Allow-Origin' => '*', 
+    content_type :json
+    headers 'Access-Control-Allow-Origin' => '*',
            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST'],
-           'Access-Control-Allow-Headers' => 'Content-Type'  
+           'Access-Control-Allow-Headers' => 'Content-Type'
   end
- 
-  set :protection, false  
+
+  set :protection, false
 
   get '/' do
-    "Hello World"
-  end
-
-  options '/drawings' do
-    
+    "WeDraw API"
   end
 
   get '/drawings' do
     json Drawing.all
   end
-  
+
+  options '/drawings' do
+  end
+
   post '/drawings' do
     puts "Hola #{params}!"
+    # Drawing.create({ sections_attributes:[ { color: xxx, points_attributes:[ { latitude: xxx, longitude: yyy } ] } ]})
+
+    # Drawing.create({ sections_attributes: params[sections] })
   end
 end
