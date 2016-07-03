@@ -31,6 +31,15 @@ class App < Sinatra::Base
     json Drawing.all
   end
 
+  get '/drawings/:id' do
+    json Drawing.find(params[:id])
+  end
+
+  get '/drawings/:id/delete' do
+    Drawing.destroy(params[:id])
+    "Destruido dibujo con ID ##{params[:id]}"
+  end
+
   options '/drawings' do
   end
 
