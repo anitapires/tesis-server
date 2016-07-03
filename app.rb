@@ -1,9 +1,10 @@
 require 'sinatra'
-#require 'sinatra/activerecord'
+require 'sinatra/activerecord'
 require 'sinatra/json'
 
-#require_relative 'models/drawing'
-#require_relative 'models/section'
+require_relative 'models/drawing'
+require_relative 'models/section'
+require_relative 'models/point'
 
 
 class App < Sinatra::Base
@@ -23,12 +24,26 @@ class App < Sinatra::Base
   set :protection, false
 
   get '/' do
-    "WeDraw API"
+    json "WeDraw API"
   end
 
   get '/drawings' do
     json Drawing.all
   end
+
+  #get '/create-drawing' do
+    #Drawing.create({
+      #created_at: nil, 
+      #sections_attributes:[
+        #color: '#ff0000',
+        #points_attributes:[
+          #{ latitude: -34.9215272, longitude: -57.9632371},
+          #{ latitude: -34.9215273, longitude: -57.9632372},
+          #{ latitude: -34.9215274, longitude: -57.9632373},
+        #]
+      #]
+    #});
+  #end
 
   options '/drawings' do
   end
