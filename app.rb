@@ -9,6 +9,8 @@ require_relative 'models/point'
 
 class App < Sinatra::Base
 
+  register Sinatra::ActiveRecordExtension
+
   configure :production, :test do
     set :bind, '0.0.0.0'
   end
@@ -21,8 +23,6 @@ class App < Sinatra::Base
            'Access-Control-Allow-Headers' => 'Content-Type'
   end
 
-  set :protection, false
-
   get '/' do
     json "WeDraw API"
   end
@@ -30,20 +30,6 @@ class App < Sinatra::Base
   get '/drawings' do
     json Drawing.all
   end
-
-  #get '/create-drawing' do
-    #Drawing.create({
-      #created_at: nil, 
-      #sections_attributes:[
-        #color: '#ff0000',
-        #points_attributes:[
-          #{ latitude: -34.9215272, longitude: -57.9632371},
-          #{ latitude: -34.9215273, longitude: -57.9632372},
-          #{ latitude: -34.9215274, longitude: -57.9632373},
-        #]
-      #]
-    #});
-  #end
 
   options '/drawings' do
   end
