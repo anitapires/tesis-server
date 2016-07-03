@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'sinatra/cross_origin'
 require 'sinatra/json'
 
 require_relative 'models/drawing'
@@ -10,17 +11,19 @@ require_relative 'models/point'
 class App < Sinatra::Base
 
   register Sinatra::ActiveRecordExtension
+  register Sinatra::CrossOrigin
+
+  configure do
+    enable :cross_origin
+
+    set :allow_origin, :any
+    set :allow_methods, [:get, :post, :options]
+    set :expose_headers, ['Content-Type']
+    set :allow_credentials, true
+  end
 
   configure :production, :test do
     set :bind, '0.0.0.0'
-  end
-
-
-  before do
-    content_type :json
-    headers 'Access-Control-Allow-Origin' => '*',
-           'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST'],
-           'Access-Control-Allow-Headers' => 'Content-Type'
   end
 
   get '/' do
@@ -40,13 +43,16 @@ class App < Sinatra::Base
     "Destruido dibujo con ID ##{params[:id]}"
   end
 
-  options '/drawings' do
+  options '*' do 
+    headers 'Allow' => "HEAD,GET,PUT,POST,DELETE,OPTIONS"
+    headers 'Access-Control-Allow-Headers' => "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
+
+    status 200
   end
 
   post '/drawings' do
-    puts "Hola #{params}!"
-    # Drawing.create({ sections_attributes:[ { color: xxx, points_attributes:[ { latitude: xxx, longitude: yyy } ] } ]})
-
-    # Drawing.create({ sections_attributes: params[sections] })
+    drawing_data = JSON.parse(request.body.read)
+    
+    json Drawing.create({sections_attributes: drawing_data['sections']})
   end
 end
