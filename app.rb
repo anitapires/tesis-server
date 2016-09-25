@@ -55,4 +55,8 @@ class App < Sinatra::Base
     
     json Drawing.create({sections_attributes: drawing_data['sections']})
   end
+
+  get '/prueba_geo' do
+    erb :geo
+  end
 end
