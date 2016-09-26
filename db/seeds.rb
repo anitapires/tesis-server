@@ -1,7 +1,7 @@
 Drawing.create([
   {
     sections_attributes:[
-      color: '#232323',
+      stroke_attributes: { color: '#232323' },
       points_attributes:[
         { latitude: -34.91103800, longitude: -57.95447400},
         { latitude: -34.90961500, longitude: -57.94153700},
@@ -11,7 +11,7 @@ Drawing.create([
   },
   {
     sections_attributes:[
-      color: '#ffae00',
+      stroke_attributes: { color: '#ffae00' },
       points_attributes:[
         {latitude: -34.92148910, longitude: -57.95637650},
         {latitude: -34.92152720, longitude: -57.96323710},

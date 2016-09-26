@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 3) do
+ActiveRecord::Schema.define(version: 4) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,11 +31,18 @@ ActiveRecord::Schema.define(version: 3) do
 
   create_table "sections", force: :cascade do |t|
     t.integer "drawing_id"
-    t.string  "color"
   end
 
   add_index "sections", ["drawing_id"], name: "index_sections_on_drawing_id", using: :btree
 
+  create_table "strokes", force: :cascade do |t|
+    t.integer "section_id"
+    t.string  "color"
+  end
+
+  add_index "strokes", ["section_id"], name: "index_strokes_on_section_id", using: :btree
+
   add_foreign_key "points", "sections"
   add_foreign_key "sections", "drawings"
+  add_foreign_key "strokes", "sections"
 end

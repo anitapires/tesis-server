@@ -5,6 +5,7 @@ require 'sinatra/json'
 
 require_relative 'models/drawing'
 require_relative 'models/section'
+require_relative 'models/stroke'
 require_relative 'models/point'
 
 

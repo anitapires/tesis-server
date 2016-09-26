@@ -4,6 +4,6 @@ class Drawing < ActiveRecord::Base
   accepts_nested_attributes_for :sections
 
   def as_json(options={})
-    super(include: { sections: { include: { points: { only: [:id, :latitude, :longitude] } } } })
+    super(include: { sections: { include: { stroke: { only: [:color] }, points: { only: [:id, :latitude, :longitude] } } } })
   end
 end
