@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGU5_GQbuD2DzWeQqJOewndTDnAdzDdrg" type="text/javascript"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Nuevo dibujo</h1>
+      <form action="/drawings" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="file">File</label>
+          <input id="drawing-file" type="file" name="file">
+        </div>
+
+        <button type="submit" class="btn btn-default">Guardar</button>
+        <a href="/drawings" class="btn btn-danger">Cancelar</a>
+      </form>
+
+      <div id="map" style="width: 900px; height: 600px">   
+      </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+  $(function() {
+    // :mask: :(
+    function convertToLatLng(coordinates){
+      return coordinates.map(function(point){
+        return {lat: point.latitude, lng: point.longitude}
+      });
+    }
+
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 14,
+      center: {lat: -34.921357, lng: -57.954622},
+      mapTypeId: google.maps.MapTypeId.TERRAIN
+    })
+
+    $('#drawing-file').change(function(){
+      file_input = $(this)
+      file = file_input[0].files[0]
+
+      if(file){
+        var fr = new FileReader();
+        
+        fr.onload = function(e){
+          try {
+            sections = JSON.parse(fr.result)
+
+            for (var i = 0; i < sections.length; i++) {
+              new google.maps.Polyline({
+                path: convertToLatLng(sections[i].points_attributes),
+                geodesic: true,
+                strokeColor: sections[i].stroke_attributes.color,
+                strokeOpacity: 1.0,
+                strokeWeight: 2
+              }).setMap(map)
+            }
+          }
+          catch(SyntaxError){
+            alert('El archivo subido tiene errores de sintaxis') 
+          }
+        }
+
+        fr.readAsText(file)
+      }
+    })
+  })
+  </script>
+</html> 

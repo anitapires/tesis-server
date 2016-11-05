@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <title></title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBGU5_GQbuD2DzWeQqJOewndTDnAdzDdrg" type="text/javascript"></script>
+
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dibujos</h1>
+      <table class="table">
+        <tr>
+          <th>Mostrar en el mapa?</th>
+          <th>#</th>
+          <th></th>
+        </tr>
+        <% @drawings.each do |drawing|%>
+            <tr>
+              <td><input class="drawing-checkbox" type="checkbox" data-drawing-id="<%= drawing.id %>" /></td>
+              <td><%= drawing.id %></td>
+              <td>
+                <form method="post" action="/drawings/<%= drawing.id %>">
+                  <input type="hidden" name="_method" value="delete">
+                  <input type="submit" value="Delete">
+                </form>
+              </td>
+            </tr>
+        <% end %>
+      </table>
+  
+      <a class="btn btn-primary" href="/drawings/new" role="button">Nuevo dibujin</a>
+
+      <div id="map" style="width: 900px; height: 600px"> 
+    </div>
+
+    <script type="text/javascript">
+      $(function(){
+        drawings = <%= @drawings.to_json%>
+        
+        polylines = {}
+
+        // :mask: :(
+        function convertToLatLng(coordinates){
+          return coordinates.map(function(point){
+            return {lat: parseFloat(point.latitude), lng: parseFloat(point.longitude)}
+          });
+        }
+
+        // :'( no ioren por mi io ia estoy muerto         
+        for (var i = 0; i < drawings.length; i++) {
+          polylines[drawings[i].id] = []
+
+          for (var j = 0; j < drawings[i].sections.length; j++) {
+            polylines[drawings[i].id].push(new google.maps.Polyline({
+              path: convertToLatLng(drawings[i].sections[j].points),
+              geodesic: true,
+              strokeColor: drawings[i].sections[j].stroke.color,
+              strokeOpacity: 1.0,
+              strokeWeight: 2
+            }))            
+          }
+        }
+
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 14,
+          center: {lat: -34.921357, lng: -57.954622},
+          mapTypeId: google.maps.MapTypeId.TERRAIN
+        })
+
+        $('.drawing-checkbox').click(function(){
+          var checkbox = $(this)
+          var drawing_id = checkbox.data('drawing-id')
+          console.log(drawing_id)
+          console.log(polylines[drawing_id])
+          if(checkbox.is(':checked'))
+          {
+            //mostrar el mapa
+            for (var i = 0; i < polylines[drawing_id].length; i++){
+              polylines[drawing_id][i].setMap(map);
+            }
+          }
+          else
+          {
+            //ocultar el mapa
+            for (var i = 0; i < polylines[drawing_id].length; i++){
+              polylines[drawing_id][i].setMap(null);
+            }
+          }
+        });
+    });
+    </script>
+  </body>
+</html>

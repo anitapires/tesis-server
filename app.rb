@@ -13,6 +13,7 @@ class App < Sinatra::Base
 
   register Sinatra::ActiveRecordExtension
   register Sinatra::CrossOrigin
+  register Sinatra::Contrib
 
   use Rack::MethodOverride
 
@@ -33,8 +34,8 @@ class App < Sinatra::Base
     json "WeDraw API"
   end
 
-  # GET /drawings.(html|json)
-  get '/drawings', provides: [:html, :json] do
+  # GET /drawings
+  get '/drawings' do
     @drawings = Drawing.all
 
     respond_to do |format|
@@ -50,7 +51,7 @@ class App < Sinatra::Base
     erb :new
   end
 
-  post '/drawings', provides: [:html, :json] do
+  post '/drawings' do
 
     respond_to do |format|
       format.json do
@@ -60,14 +61,16 @@ class App < Sinatra::Base
       end
 
       format.html do
-        Drawing.create({ sections_attributes: params[:sections_attributes] })
+        tmpfile = params[:file][:tempfile]
 
+        Drawing.create({ sections_attributes: JSON.parse(tmpfile.read) })
+        
         redirect to('/drawings')
       end
     end
   end
 
-  get '/drawings/:id', provides: [:html, :json] do
+  get '/drawings/:id' do
     json Drawing.find(params[:id])
   end
 

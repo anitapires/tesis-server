@@ -3,7 +3,7 @@ class Section < ActiveRecord::Base
 
   has_many :points, dependent: :destroy
 
-  has_one  :stroke
+  has_one  :stroke, dependent: :destroy
 
   accepts_nested_attributes_for :points
   accepts_nested_attributes_for :stroke
